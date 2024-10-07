@@ -1,11 +1,13 @@
 #include "dictionary.h"
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+
+#define MAX_LINE_LENGTH 1024
 
 static Dictionary dict = NULL;
 
-void clearBuffer();
-void searchFromFile(const char* filename);
+int isAlphabethic(const char* token);
 
 int main(int argc, char **argv) 
 {
@@ -26,63 +28,38 @@ int main(int argc, char **argv)
     }
     
     dict = newDictionary();
-    char word[50] = {0};
-    char description[500] = {0};
+    char line[MAX_LINE_LENGTH] = {0};
+    char *word = NULL;
     
-    while (fgets(word, sizeof(word), words) != NULL){
+    while (fgets(line, sizeof(line), words) != NULL){
         
-        word[strcspn(word,"\n")] = 0;
+        word = strtok(line, " ,.-!?\n\r");
+        
+        while (word != NULL) {
 
-        if(fgets(description, sizeof(description), words) == NULL) {
-            fprintf(stderr, "Error reading the description: Aborting");
-            return 1;
+            if (isAlphabethic(word))
+                dictionaryInsert(dict, word); 
+            
+            word = strtok(NULL, " ,.-!?\n\r");
         }
-        
-        description[strcspn(description, "\n")] = 0;
-        dictionaryInsert(dict, word, description);
     }
-    
+
     fclose(words);
 
-    if (argc != 3) {
-        printf("Insert a word to search:\n");
-        while (scanf("%s",word) == 1) {
-            clearBuffer();
-            const char* desc = dictionarySearch(dict, word);
-            printf("The description of the word %s is:\n%s\n",word,desc);
-            printf("Insert a word:\n");
-        }
-    }
-    else {
-        searchFromFile(argv[2]);
-    }
+    printDictionary(dict);
 
     freeDictionary(dict);
 
     return 0;
 }
 
-void clearBuffer()
-{
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
 
-void searchFromFile(const char* filename)
+int isAlphabethic(const char* token)
 {
-    char word[50] = {0};
-    FILE *search = fopen(filename, "r");
-    
-    while (fgets(word, sizeof(word), search) != NULL){
-       
-        word[strcspn(word,"\n")] = 0;
-        const char* desc = dictionarySearch(dict, word);
-        
-        if (desc != NULL)
-            printf("The description of the word %s is:\n%s\n", word, desc);
-        else
-            printf("Word %s not found\n", word);
+    for (size_t i = 0; token[i] != '\0'; ++i) {
+        if (!isalpha(token[i])) {
+            return 0;
+        }
     }
-
-    fclose(search);
+    return 1;
 }

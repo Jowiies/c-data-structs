@@ -20,7 +20,7 @@ Node *newNode(const char c, Node *child, Node *brother)
     
     node->_brother = brother;
     node->_child = child;
-    node->_key = c;
+    node->_key = (c != ENDCHAR) ? tolower(c) : c;
     node->_wordcount = (c == ENDCHAR) ? 1 : 0;
     
     return node;
@@ -71,9 +71,9 @@ void printNodes(Node *ptr, char buffer[], uint32_t *it)
 
     if (ptr->_key == ENDCHAR) {
         buffer[*it] = '\0';
-        printf("- %s -> %d times.\n", buffer, ptr->_wordcount);
-        return; 
+        printf(" - %s --> %d times.\n", buffer, ptr->_wordcount);
     }
+
 
     buffer[*it] = ptr->_key;
     (*it)++;
@@ -134,7 +134,7 @@ Node *insertNode(Node *ptr, const char* word, const int *size, int it)
 }
 
 
-Node* findNode(Node *ptr, const char* word, size_t* size, int it)
+Node* findNode(Node *ptr, const char* word, size_t* size, size_t it)
 {
     if (ptr != NULL) {
         char c = tolower(word[it]);
