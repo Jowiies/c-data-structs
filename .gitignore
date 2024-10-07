@@ -1,0 +1,11 @@
+# Ignore all files
+*
+
+# Allow C source files
+!*.c
+
+# Allow C header files
+!*.h
+
+# Optionally allow other files if necessary
+# !*.txt   # Uncomment this line to allow .txt files, for example
