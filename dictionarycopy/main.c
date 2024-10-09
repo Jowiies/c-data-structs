@@ -5,6 +5,7 @@
 
 #define MAX_LINE_LENGTH 1024
 
+//static Dictionary dict = NULL;
 static Dictionary dict = NULL;
 
 int isAlphabethic(const char* token);
@@ -48,6 +49,10 @@ int main(int argc, char **argv)
 
     printDictionary(dict);
 
+
+    printf(" - %d total unique words.\n", getUniqueWordCount(dict));
+    printf(" - %d total words.\n", getTotalWords(dict));
+    
     freeDictionary(dict);
 
     return 0;

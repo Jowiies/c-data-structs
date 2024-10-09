@@ -1,7 +1,7 @@
 #include "dictionary.h"
 
+#include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -28,7 +28,7 @@ Node *newNode(const char c, Node *child, Node *brother)
 
 Dictionary newDictionary()
 {
-   Dictionary d = (Dictionary)malloc(sizeof(Dictionary));
+   Dictionary d = (Dictionary)malloc(sizeof(Dictionary_t));
    
    if (!d) {
        fprintf(stderr, "Memory allocation error: Couldn't create the dictionary");
@@ -36,6 +36,7 @@ Dictionary newDictionary()
    }
    
    d->_firstnode = NULL;
+   d->_uniqueCount = 0;
    
    return d;
 }
@@ -96,12 +97,13 @@ void printDictionary(Dictionary dict)
 
 
 //Returns a pointer to a new dynamically allocated node
-Node *insertNode(Node *ptr, const char* word, const int *size, int it)
+Node *insertNode(Node *ptr, const char* word, const int *size, int it, uint32_t *uwc)
 {
 
     if (it == *size) {
         if (ptr == NULL) {
             ptr = newNode(ENDCHAR, NULL, NULL);
+            (*uwc)++;
         }
         else if (ptr->_key == ENDCHAR) {
             ptr->_wordcount++;
@@ -109,6 +111,7 @@ Node *insertNode(Node *ptr, const char* word, const int *size, int it)
         else {
             Node *newnode = newNode(ENDCHAR, NULL, ptr);
             ptr = newnode;
+            (*uwc)++;
         }
         return ptr;
     }
@@ -121,13 +124,13 @@ Node *insertNode(Node *ptr, const char* word, const int *size, int it)
     if (ptr->_key > c) {
         Node* newnode = newNode(c, NULL, ptr);
         ptr = newnode;
-        ptr->_child = insertNode(ptr->_child, word, size, it+1);
+        ptr->_child = insertNode(ptr->_child, word, size, it+1, uwc);
     }
     else if (ptr->_key < c) {
-        ptr->_brother = insertNode(ptr->_brother, word, size, it);
+        ptr->_brother = insertNode(ptr->_brother, word, size, it, uwc);
     }
     else {
-        ptr->_child = insertNode(ptr->_child, word, size, it+1);
+        ptr->_child = insertNode(ptr->_child, word, size, it+1, uwc);
     }
 
     return ptr;
@@ -157,7 +160,17 @@ void dictionaryInsert(Dictionary dict, const char* word)
         fprintf(stderr, "Insertion Error: The word was NULL");
         exit(1);
     }
-    
+    dict->_totalwords++;
     int wordsize = strlen(word), iter = 0;
-    dict->_firstnode = insertNode(dict->_firstnode, word, &wordsize, iter);
+    dict->_firstnode = insertNode(dict->_firstnode, word, &wordsize, iter, &dict->_uniqueCount);
+}
+
+uint32_t getUniqueWordCount(Dictionary dict)
+{
+    return dict->_uniqueCount;
+}
+
+uint32_t getTotalWords(Dictionary dict)
+{
+    return dict->_totalwords;
 }

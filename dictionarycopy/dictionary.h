@@ -16,6 +16,8 @@ typedef struct Node {
 
 typedef struct Dictionary_t {
     Node *_firstnode;
+    uint32_t _uniqueCount;
+    uint32_t _totalwords;
 } Dictionary_t;
 
 typedef Dictionary_t* Dictionary;
@@ -23,8 +25,10 @@ typedef Dictionary_t* Dictionary;
 Dictionary newDictionary();
 void dictionaryInsert(Dictionary dict, const char* word);
 void dictionaryRemove(Dictionary dict, const char* word);
-size_t dictionaryContains(Dictionary dict, const char* str);
 void printDictionary(Dictionary dict);
 void freeDictionary(Dictionary dict);
+
+uint32_t getUniqueWordCount(Dictionary dict);
+uint32_t getTotalWords(Dictionary dict);
 
 #endif
