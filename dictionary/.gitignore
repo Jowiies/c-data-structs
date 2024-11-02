@@ -1,11 +1,12 @@
-
-!*/
+*
 
 !*.gitignore
 
 !*.c
 
 !*.h
+
+!*/
 
 !Makefile
 
