@@ -1,4 +1,4 @@
-#include "dictionary.h"
+#include "libsrc/dictionary.h"
 #include <stdio.h>
 #include <string.h>
 
