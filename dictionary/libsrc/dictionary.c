@@ -74,11 +74,7 @@ Node *deleteNode(Node *ptr, const char* word, size_t *size, int it)
         return ptr;
     }
 
-   // printf("NODE= %c\n", ptr->_key);
-   // printf("ITER= %d\n",it);
-
     if ((size_t)it == *size && ptr->_key == ENDCHAR) {
-    //    printf("ENDCHAR\n");
         Node* delptr = ptr;
 
         ptr = (ptr->_brother != NULL) ? ptr->_brother : NULL;
@@ -98,7 +94,6 @@ Node *deleteNode(Node *ptr, const char* word, size_t *size, int it)
         ptr->_child = deleteNode(ptr->_child, word, size, it+1);
 
         if (ptr->_child == NULL) {
-     //       printf("CHILDNULL\n");
 
             Node* delptr = ptr;
 
