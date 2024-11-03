@@ -1,4 +1,5 @@
 #include "libsrc/dictionary.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -14,11 +15,11 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (argc > 3) {
+    if (argc > 2) {
         fprintf(stderr, "Error: too many parameters\n");
         return 1;
     }
-    
+        
     FILE *words = fopen(argv[1], "r");
     if (words == NULL) {
         fprintf(stderr, "Error: couldn't open the file %s\n", argv[1]);
@@ -43,18 +44,48 @@ int main(int argc, char **argv)
     }
     
     fclose(words);
+    int opt;
+    printf("1. Insert\n2. Delete\n3. Search\n");
+    while (1) {
+        printf("Input: ");
+        scanf("%d",&opt);
 
-    if (argc != 3) {
-        printf("Insert a word to search:\n");
-        while (scanf("%s",word) == 1) {
-            clearBuffer();
-            const char* desc = dictionarySearch(dict, word);
-            printf("The description of the word %s is:\n%s\n",word,desc);
-            printf("Insert a word:\n");
+        switch (opt) {
+            case 1: {
+                scanf("%49s", word);
+               
+                clearBuffer();
+              
+                fgets(description, sizeof(description) -1 , stdin);
+                description[strcspn(description, "\n")] = 0;
+                
+                dictionaryInsert(dict, word, description);
+                break;
+            }
+            case 2: {
+                scanf("%49s", word);
+                dictionaryRemoveWord(dict, word);
+                break;
+            }
+            case 3: {
+                scanf("%49s", word);
+                const char* desc = dictionarySearch(dict, word); 
+                if (desc == NULL) {
+                    printf("The word %s isn't in the dictionary\n", word);
+                }
+                else {
+                    printf("The description of the word %s is:\n%s\n",word, desc);
+                }
+                break;
+            }
+            default: {
+                opt = -1;
+                break;
+            }
         }
-    }
-    else {
-        searchFromFile(argv[2]);
+        if (opt == -1)
+            break;
+        
     }
 
     freeDictionary(dict);

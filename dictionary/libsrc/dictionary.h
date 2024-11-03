@@ -22,7 +22,7 @@ typedef Dictionary_t* Dictionary;
 Dictionary newDictionary();
 void dictionaryInsert(Dictionary dict, const char* word, const char* description);
 const char* dictionarySearch(Dictionary dict, const char* word);
-void dictionaryRemove(Dictionary dict, const char* word);
+void dictionaryRemoveWord(Dictionary dict, const char* word);
 size_t dictionaryContains(Dictionary dict, const char* str);
 void freeDictionary(Dictionary dict);
 

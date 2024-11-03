@@ -68,6 +68,49 @@ Node *insertNode(Node *ptr, const char* word, const char* desc, const int *size,
     return ptr;
 }
 
+Node *deleteNode(Node *ptr, const char* word, size_t *size, int it)
+{
+    if (ptr == NULL) {
+        return ptr;
+    }
+
+   // printf("NODE= %c\n", ptr->_key);
+   // printf("ITER= %d\n",it);
+
+    if ((size_t)it == *size && ptr->_key == ENDCHAR) {
+    //    printf("ENDCHAR\n");
+        Node* delptr = ptr;
+
+        ptr = (ptr->_brother != NULL) ? ptr->_brother : NULL;
+
+        free((void*)delptr->_value);
+        free(delptr);
+
+        return ptr;
+    }
+
+    char c = tolower(word[it]);
+
+    if(ptr->_key < c) {
+        ptr->_brother = deleteNode(ptr->_brother, word, size, it);
+    } 
+    else if (ptr->_key == c) {
+        ptr->_child = deleteNode(ptr->_child, word, size, it+1);
+
+        if (ptr->_child == NULL) {
+     //       printf("CHILDNULL\n");
+
+            Node* delptr = ptr;
+
+            ptr = (ptr->_brother != NULL) ? ptr->_brother : NULL;
+
+            free((void*)delptr);
+        }
+    }
+
+    return ptr;
+}
+
 void freeNodes(Node *ptr)
 {
     if (ptr == NULL)
@@ -125,6 +168,12 @@ void dictionaryInsert(Dictionary dict, const char* word, const char* description
     
     int wordsize = strlen(word), iter = 0;
     dict->_firstnode = insertNode(dict->_firstnode, word,description, &wordsize, iter);
+}
+
+void dictionaryRemoveWord(Dictionary dict, const char* word) 
+{
+    size_t size = strlen(word);
+    dict->_firstnode = deleteNode(dict->_firstnode, word, &size, 0);
 }
 
 const char* dictionarySearch(Dictionary dict, const char* word) 
