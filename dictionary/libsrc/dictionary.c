@@ -136,7 +136,7 @@ Node* findNode(Node *ptr, const char* word, size_t* size, int it)
 
 Dictionary newDictionary()
 {
-   Dictionary d = (Dictionary)malloc(sizeof(Dictionary));
+   Dictionary d = (Dictionary)malloc(sizeof(Dictionary_t));
    
    if (!d) {
        fprintf(stderr, "Memory allocation error: Couldn't create the dictionary");
